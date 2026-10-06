@@ -17,6 +17,8 @@ module DiscourseMlmDailySummary
                    email
          end
         def mailing_list(user, opts={})
+          return unless SiteSetting.mlm_daily_summary_enabled
+
           prepend_view_path "plugins/discourse-mlm-daily-summary/app/views"
 
           @since = opts[:since] || 1.day.ago
@@ -67,6 +69,7 @@ module DiscourseMlmDailySummary
 
           def execute(args)
             return if SiteSetting.disable_mailing_list_mode?
+            return unless SiteSetting.mlm_daily_summary_enabled
             target_user_ids.each do |user_id|
               Jobs.enqueue(:user_email, type: "mailing_list", user_id: user_id)
             end

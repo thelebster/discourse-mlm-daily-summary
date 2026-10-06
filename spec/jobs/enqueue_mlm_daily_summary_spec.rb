@@ -39,5 +39,15 @@ RSpec.describe Jobs::EnqueueMlmDailySummary do
 
       expect(Jobs::UserEmail.jobs).to be_empty
     end
+
+    it "enqueues nothing when the plugin setting is turned off" do
+      freeze_time
+      user_with_stored_value("t")
+      SiteSetting.mlm_daily_summary_enabled = false
+
+      described_class.new.execute({})
+
+      expect(Jobs::UserEmail.jobs).to be_empty
+    end
   end
 end
